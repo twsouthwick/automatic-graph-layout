@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using Microsoft.Msagl.Drawing;
 
 namespace Microsoft.Msagl.WpfGraphControl {
@@ -13,16 +14,27 @@ namespace Microsoft.Msagl.WpfGraphControl {
         }
         public static readonly DependencyProperty GraphProperty =
             DependencyProperty.Register("Graph", typeof(Graph), typeof(AutomaticGraphLayoutControl), new PropertyMetadata(default(Graph),
-                (d,e)=> ((AutomaticGraphLayoutControl)d)?.SetGraph()));
-     
+                (d, e) => ((AutomaticGraphLayoutControl)d)?.SetGraph()));
+
         private void SetGraph() {
-            if (Graph == null) {
+
+            if (Graph is null) {
                 dockPanel.Children.Clear();
                 return;
             }
-            var graphViewer = new GraphViewer();
-            graphViewer.BindToPanel(dockPanel);
-            graphViewer.Graph = Graph;
+
+            GraphViewerRemoved?.Invoke(this, _viewer);
+
+            _viewer = new GraphViewer();
+            _viewer.BindToPanel(dockPanel);
+            _viewer.Graph = Graph;
+
+            GraphViewerAdded?.Invoke(this, _viewer);
         }
+
+        private GraphViewer _viewer;
+
+        public event EventHandler<GraphViewer> GraphViewerRemoved;
+        public event EventHandler<GraphViewer> GraphViewerAdded;
     }
 }
