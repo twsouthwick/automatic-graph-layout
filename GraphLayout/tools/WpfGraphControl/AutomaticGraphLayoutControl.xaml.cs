@@ -17,9 +17,9 @@ namespace Microsoft.Msagl.WpfGraphControl {
                 (d, e) => ((AutomaticGraphLayoutControl)d)?.SetGraph()));
 
         private void SetGraph() {
+            dockPanel.Children.Clear();
 
             if (Graph is null) {
-                dockPanel.Children.Clear();
                 return;
             }
 
